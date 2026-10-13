@@ -1,4 +1,4 @@
-o /dev/null
+\o /dev/null
 -- =====================================================================
 -- Testes de integração: RLS, vendas atômicas, estoque, fiados e dashboard.
 -- Executados por scripts/test-db.sh. Qualquer falha aborta o script.
