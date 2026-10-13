@@ -53,7 +53,8 @@ src/
   types/database.ts        # Tipos das tabelas
   __tests__/               # Testes unitários (Jest)
 supabase/
-  migrations/              # Esquema, RLS, funções, storage
+  migrations/              # Esquema, RLS, funções, storage, planos/assinaturas
+  functions/               # Edge Functions (Deno): revenuecat-webhook, sync-subscription
   tests/                   # Testes SQL de integração (RLS, atomicidade, idempotência)
 scripts/test-db.sh         # Sobe um Postgres descartável e roda migrations + testes
 docs/                      # Esta documentação
@@ -86,8 +87,9 @@ Uma venda fiado **nunca** conta como dinheiro recebido até o pagamento ser regi
 
 - **Fase 1 (esta entrega):** estrutura, design, navegação, autenticação, banco + RLS, negócio, produtos e
   estoque, clientes, vendas, fiados, financeiro básico, dashboard, testes.
-- **Fase 2:** planos Grátis/Pro, RevenueCat (Android/iOS), paywall, teste grátis, limites por plano no banco,
-  restauração de compras, webhook seguro (Edge Function) gravando em `subscriptions`.
+- **Fase 2 (concluída):** planos Grátis/Pro, RevenueCat (Android/iOS), tela Pro, teste grátis vindo da loja,
+  limites por plano no banco, restauração de compras, webhook seguro e sincronização (Edge Functions).
+  Detalhes em `docs/SUBSCRIPTIONS.md`.
 - **Fase 3:** Assistente IA (Edge Function + consultas determinísticas + controle de cota em `ai_usage`),
   relatórios avançados, exportação PDF/Excel, recibos e orçamentos, sugestões.
 - **Fase 4:** builds EAS, ícone/splash finais, capturas, políticas revisadas, exclusão de conta (Edge Function),

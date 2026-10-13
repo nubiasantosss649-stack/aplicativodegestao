@@ -88,7 +88,10 @@ export function useCreateCustomer(businessId: string) {
       unwrap<Customer>(
         await supabase.from('customers').insert({ business_id: businessId, ...toRow(input) }).select().single(),
       ),
-    onSuccess: () => qc.invalidateQueries({ queryKey: customerKeys.all(businessId) }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: customerKeys.all(businessId) });
+      qc.invalidateQueries({ queryKey: ['entitlements', businessId] });
+    },
   });
 }
 

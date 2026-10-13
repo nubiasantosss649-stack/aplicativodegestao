@@ -10,6 +10,7 @@ import { ToastProvider } from '@/components/ui';
 import { queryClient } from '@/lib/queryClient';
 import { AuthProvider, useAuth } from '@/providers/AuthProvider';
 import { BusinessProvider, useBusiness } from '@/providers/BusinessProvider';
+import { PurchasesIdentity } from '@/providers/PurchasesIdentity';
 import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
 
 SplashScreen.preventAutoHideAsync().catch(() => undefined);
@@ -78,6 +79,7 @@ export default function RootLayout() {
             <ToastProvider>
               <AuthProvider>
                 <BusinessProvider>
+                  <PurchasesIdentity />
                   <RootNavigator />
                 </BusinessProvider>
               </AuthProvider>

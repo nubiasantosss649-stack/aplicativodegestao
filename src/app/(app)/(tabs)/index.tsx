@@ -2,6 +2,8 @@ import { router } from 'expo-router';
 import { View } from 'react-native';
 
 import { PeriodFilter, usePeriod } from '@/components/PeriodFilter';
+import { PlanBanner } from '@/components/PlanBanner';
+import { ProGate } from '@/components/ProGate';
 import {
   BarChart,
   Card,
@@ -47,7 +49,11 @@ export default function Dashboard() {
         <ErrorState error={error} onRetry={refetch} />
       ) : (
         <>
-          <Card style={{ gap: spacing.xs }} onPress={() => router.push('/sales')} accessibilityLabel="Vendas de hoje">
+          <Card
+            style={{ gap: spacing.xs }}
+            onPress={() => router.push('/sales')}
+            accessibilityLabel="Vendas de hoje"
+          >
             <Text tone="muted">Vendas de hoje</Text>
             <Text variant="hero" tone="primary">
               {formatBRL(data.today.revenue_cents)}
@@ -56,6 +62,8 @@ export default function Dashboard() {
               {data.today.sales_count} {data.today.sales_count === 1 ? 'venda' : 'vendas'} hoje
             </Text>
           </Card>
+
+          <PlanBanner businessId={business.id} compact />
 
           <PeriodFilter value={period} onChange={setPeriod} />
 
@@ -111,17 +119,23 @@ export default function Dashboard() {
             />
           </Row>
 
-          <Card style={{ gap: spacing.md }}>
-            <Text variant="subtitle">Vendas no período</Text>
-            <BarChart
-              data={data.daily.map((d) => ({
-                label: formatShortDay(d.day),
-                value: d.total_cents,
-                detail: `${d.sales_count} vendas`,
-              }))}
-              formatValue={formatBRL}
-            />
-          </Card>
+          <ProGate
+            feature="advanced_dashboard"
+            title="Gráfico e produtos campeões"
+            description="Veja a evolução das vendas dia a dia e quais produtos mais faturam."
+          >
+            <Card style={{ gap: spacing.md }}>
+              <Text variant="subtitle">Vendas no período</Text>
+              <BarChart
+                data={data.daily.map((d) => ({
+                  label: formatShortDay(d.day),
+                  value: d.total_cents,
+                  detail: `${d.sales_count} vendas`,
+                }))}
+                formatValue={formatBRL}
+              />
+            </Card>
+          </ProGate>
 
           <Section title="Estoque baixo" actionLabel="Ver estoque" onAction={() => router.push('/stock')}>
             {data.low_stock.length === 0 ? (
@@ -129,37 +143,49 @@ export default function Dashboard() {
                 <Text tone="muted">Nenhum produto abaixo do estoque mínimo. 👍</Text>
               </Card>
             ) : (
-              data.low_stock.slice(0, 5).map((p) => (
-                <ListItem
-                  key={p.id}
-                  icon="warning"
-                  iconTone="danger"
-                  title={p.name}
-                  subtitle={`Em estoque: ${formatQuantity(p.stock_qty, p.unit)} · mínimo ${formatQuantity(p.min_stock, p.unit)}`}
-                  chevron
-                  onPress={() => router.push(`/products/${p.id}`)}
-                />
-              ))
+              data.low_stock
+                .slice(0, 5)
+                .map((p) => (
+                  <ListItem
+                    key={p.id}
+                    icon="warning"
+                    iconTone="danger"
+                    title={p.name}
+                    subtitle={`Em estoque: ${formatQuantity(p.stock_qty, p.unit)} · mínimo ${formatQuantity(p.min_stock, p.unit)}`}
+                    chevron
+                    onPress={() => router.push(`/products/${p.id}`)}
+                  />
+                ))
             )}
           </Section>
 
-          <Section title="Mais vendidos">
-            {data.top_products.length === 0 ? (
-              <EmptyState
-                icon="cart-outline"
-                title="Nenhuma venda no período"
-                message="Registre sua primeira venda para ver os produtos campeões aqui."
-                actionLabel="Nova venda"
-                onAction={() => router.push('/sell')}
-              />
-            ) : (
-              <Card padded>
-                {data.top_products.map((p, i) => (
-                  <KeyValue key={p.product_id ?? i} label={`${i + 1}. ${p.name} (${Number(p.quantity)})`} value={formatBRL(p.total_cents)} />
-                ))}
-              </Card>
-            )}
-          </Section>
+          <ProGate
+            feature="advanced_dashboard"
+            title="Mais vendidos"
+            description="Descubra quais produtos trazem mais dinheiro para o seu negócio."
+          >
+            <Section title="Mais vendidos">
+              {data.top_products.length === 0 ? (
+                <EmptyState
+                  icon="cart-outline"
+                  title="Nenhuma venda no período"
+                  message="Registre sua primeira venda para ver os produtos campeões aqui."
+                  actionLabel="Nova venda"
+                  onAction={() => router.push('/sell')}
+                />
+              ) : (
+                <Card padded>
+                  {data.top_products.map((p, i) => (
+                    <KeyValue
+                      key={p.product_id ?? i}
+                      label={`${i + 1}. ${p.name} (${Number(p.quantity)})`}
+                      value={formatBRL(p.total_cents)}
+                    />
+                  ))}
+                </Card>
+              )}
+            </Section>
+          </ProGate>
 
           <Section title="Últimas movimentações">
             {data.recent.length === 0 ? (
@@ -171,7 +197,11 @@ export default function Dashboard() {
                 <ListItem
                   key={`${r.kind}-${r.id}`}
                   icon={RECENT_ICONS[r.kind]}
-                  iconTone={r.kind === 'expense' || r.status === 'canceled' || r.status === 'reversed' ? 'danger' : 'success'}
+                  iconTone={
+                    r.kind === 'expense' || r.status === 'canceled' || r.status === 'reversed'
+                      ? 'danger'
+                      : 'success'
+                  }
                   title={r.description}
                   subtitle={`${formatDateTime(r.at)}${r.status === 'canceled' ? ' · cancelada' : r.status === 'reversed' ? ' · estornado' : r.status === 'pending' ? ' · pendente' : ''}`}
                   right={

@@ -39,6 +39,8 @@ export default function AppLayout() {
         <Stack.Screen name="settings/business" options={{ title: 'Dados do negócio' }} />
         <Stack.Screen name="settings/profile" options={{ title: 'Meu perfil' }} />
         <Stack.Screen name="help" options={{ title: 'Ajuda e suporte' }} />
+        <Stack.Screen name="subscription/index" options={{ title: 'Assinatura Pro', presentation: 'modal' }} />
+        <Stack.Screen name="subscription/manage" options={{ title: 'Minha assinatura' }} />
       </Stack>
     </CartProvider>
   );

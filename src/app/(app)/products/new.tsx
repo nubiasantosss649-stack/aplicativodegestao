@@ -4,6 +4,7 @@ import { ProductForm } from '@/components/ProductForm';
 import { EmptyState, Screen, useToast } from '@/components/ui';
 import { useCreateProduct } from '@/features/products/api';
 import { emptyProductForm, formToCreateInput } from '@/features/products/form';
+import { handlePlanLimitError } from '@/features/subscription/limits';
 import { errorMessage } from '@/lib/errors';
 import { useCurrentBusiness } from '@/providers/BusinessProvider';
 
@@ -33,6 +34,7 @@ export default function NewProduct() {
             toast.show('Produto cadastrado!');
             router.replace(`/products/${product.id}`);
           } catch (e) {
+            if (handlePlanLimitError(e, toast.show)) return;
             toast.show(errorMessage(e), 'error');
           }
         }}

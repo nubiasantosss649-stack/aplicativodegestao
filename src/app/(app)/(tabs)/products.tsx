@@ -4,6 +4,7 @@ import { FlatList, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BarcodeScanner } from '@/components/BarcodeScanner';
+import { PlanBanner } from '@/components/PlanBanner';
 import { Badge, Button, Chips, EmptyState, ErrorState, ListItem, LoadingState, SearchBar, Text } from '@/components/ui';
 import { useProducts } from '@/features/products/api';
 import { formatBRL, formatQuantity } from '@/lib/money';
@@ -37,6 +38,7 @@ export default function Products() {
           value={filter}
           onChange={setFilter}
         />
+        <PlanBanner businessId={business.id} compact />
       </View>
       {isPending ? (
         <LoadingState />

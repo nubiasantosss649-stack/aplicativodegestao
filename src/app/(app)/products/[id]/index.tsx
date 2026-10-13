@@ -7,6 +7,7 @@ import { ProductPhoto } from '@/components/ProductPhoto';
 import { Badge, Button, Card, ErrorState, KeyValue, ListItem, LoadingState, Row, Screen, Section, Text, confirm, useToast } from '@/components/ui';
 import { uploadProductPhoto, useProduct, useStockMovements, useUpdateProduct } from '@/features/products/api';
 import { formatDateTime } from '@/lib/dates';
+import { handlePlanLimitError } from '@/features/subscription/limits';
 import { errorMessage } from '@/lib/errors';
 import { formatBRL, formatPercent, formatQuantity, marginPercent } from '@/lib/money';
 import { useCurrentBusiness } from '@/providers/BusinessProvider';
@@ -112,6 +113,7 @@ export default function ProductDetail() {
                 await update.mutateAsync({ active: !p.active });
                 toast.show(p.active ? 'Produto desativado' : 'Produto reativado');
               } catch (e) {
+                if (handlePlanLimitError(e, toast.show)) return;
                 toast.show(errorMessage(e), 'error');
               }
             }}

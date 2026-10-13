@@ -129,7 +129,10 @@ export function useCreateProduct(businessId: string) {
           p_track_stock: input.trackStock,
         }),
       ),
-    onSuccess: () => qc.invalidateQueries({ queryKey: productKeys.all(businessId) }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: productKeys.all(businessId) });
+      qc.invalidateQueries({ queryKey: ['entitlements', businessId] });
+    },
   });
 }
 
@@ -159,6 +162,7 @@ export function useUpdateProduct(businessId: string, productId: string) {
     onSuccess: (product) => {
       qc.setQueryData(productKeys.detail(productId), product);
       qc.invalidateQueries({ queryKey: productKeys.all(businessId) });
+      qc.invalidateQueries({ queryKey: ['entitlements', businessId] });
     },
   });
 }

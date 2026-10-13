@@ -30,6 +30,7 @@ const GROUPS: { title: string; items: Item[] }[] = [
   {
     title: 'Conta',
     items: [
+      { title: 'Plano e assinatura', subtitle: 'Plano atual, limites e Pro IA', icon: 'diamond', href: '/subscription/manage' },
       { title: 'Configurações', subtitle: 'Negócio, perfil, aparência e sair', icon: 'settings', href: '/settings' },
       { title: 'Ajuda e suporte', subtitle: 'Dúvidas frequentes e contato', icon: 'help-circle', href: '/help' },
     ],

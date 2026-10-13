@@ -6,7 +6,7 @@ import type { PaymentLine } from './cart';
 import type { Sale, SaleDetail } from '@/types/database';
 
 function invalidateAfterSale(qc: ReturnType<typeof useQueryClient>, businessId: string) {
-  for (const key of ['sales', 'products', 'dashboard', 'customers', 'receivables', 'finance']) {
+  for (const key of ['sales', 'products', 'dashboard', 'customers', 'receivables', 'finance', 'entitlements']) {
     qc.invalidateQueries({ queryKey: [key, businessId] });
   }
   qc.invalidateQueries({ queryKey: ['product'] });

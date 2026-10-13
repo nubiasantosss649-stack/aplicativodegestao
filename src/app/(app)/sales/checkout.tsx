@@ -7,6 +7,7 @@ import { CustomerPicker } from '@/components/CustomerPicker';
 import { Badge, Button, Card, Chips, EmptyState, KeyValue, Screen, Section, Text, TextField, useToast } from '@/components/ui';
 import { PAYMENT_LABELS, normalizePayments, validatePayments, type PaymentLine } from '@/features/sales/cart';
 import { useCompleteSale } from '@/features/sales/api';
+import { handlePlanLimitError } from '@/features/subscription/limits';
 import { addDays, formatDate, parseBRDate, toISODate } from '@/lib/dates';
 import { errorMessage } from '@/lib/errors';
 import { newIdempotencyKey } from '@/lib/id';
@@ -79,6 +80,7 @@ export default function Checkout() {
       toast.show(`Venda #${sale.number} registrada!${validation.changeCents > 0 ? ` Troco: ${formatBRL(validation.changeCents)}` : ''}`);
       router.replace(`/sales/${sale.id}`);
     } catch (e) {
+      if (handlePlanLimitError(e, toast.show)) return;
       toast.show(errorMessage(e), 'error');
     }
   };

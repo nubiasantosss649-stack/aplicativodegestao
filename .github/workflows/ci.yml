@@ -35,3 +35,13 @@ jobs:
       - run: ./scripts/test-db.sh
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+
+  edge-functions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: deno check revenuecat-webhook/index.ts sync-subscription/index.ts
+        working-directory: supabase/functions

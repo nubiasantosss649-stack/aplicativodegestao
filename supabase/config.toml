@@ -25,3 +25,9 @@ double_confirm_changes = true
 
 [storage]
 file_size_limit = "5MiB"
+
+[functions.revenuecat-webhook]
+verify_jwt = false
+
+[functions.sync-subscription]
+verify_jwt = true

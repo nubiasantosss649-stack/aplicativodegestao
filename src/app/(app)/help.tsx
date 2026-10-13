@@ -34,6 +34,14 @@ const FAQ = [
     a: 'Faturamento é o total vendido (inclui fiado). Recebido é o dinheiro que realmente entrou. Lucro estimado é o faturamento menos o custo dos produtos e as despesas.',
   },
   {
+    q: 'Como funciona o Plano Pro?',
+    a: 'O Plano Grátis permite até 30 produtos ativos e 50 vendas por mês. O Pro IA libera produtos e vendas ilimitados, relatórios e cobranças pelo WhatsApp. A assinatura é feita e cancelada pela Google Play ou App Store. Se cancelar, seus dados continuam salvos e visíveis.',
+  },
+  {
+    q: 'Troquei de celular. Como recupero minha assinatura?',
+    a: 'Entre com a mesma conta e use Mais → Plano e assinatura → Restaurar compras (com a mesma conta da loja usada na compra).',
+  },
+  {
     q: 'O comprovante tem valor fiscal?',
     a: 'Não. O app gera comprovantes não fiscais. Se o seu negócio precisa emitir nota fiscal, utilize o emissor oficial.',
   },

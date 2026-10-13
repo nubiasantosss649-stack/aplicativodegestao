@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Linking, View } from 'react-native';
@@ -22,6 +22,8 @@ import {
   useToast,
 } from '@/components/ui';
 import { useCustomer } from '@/features/customers/api';
+import { useEntitlements } from '@/features/subscription/api';
+import { hasFeature } from '@/features/subscription/plans';
 import { METHOD_OPTIONS } from '@/features/finance/api';
 import {
   useCreateReceivable,
@@ -62,6 +64,7 @@ export default function CustomerCharge() {
   const receive = useReceivePayment(business.id, customerId);
   const createReceivable = useCreateReceivable(business.id, customerId);
   const reverse = useReversePayment(business.id, customerId);
+  const entitlements = useEntitlements(business.id);
   const [payKey, setPayKey] = useState(newIdempotencyKey);
   const [panel, setPanel] = useState<'none' | 'receive' | 'new' | 'message'>('none');
   const [message, setMessage] = useState('');
@@ -80,30 +83,53 @@ export default function CustomerCharge() {
   const oldest = open[0]?.due_date ?? null;
   const overdueDays = oldest ? daysOverdue(oldest) : 0;
 
-
   if (customer.isPending || receivables.isPending) return <LoadingState />;
-  if (customer.error || !customer.data) return <ErrorState error={customer.error} onRetry={customer.refetch} />;
+  if (customer.error || !customer.data)
+    return <ErrorState error={customer.error} onRetry={customer.refetch} />;
   const c = customer.data;
 
   return (
-    <Screen refreshing={receivables.isRefetching} onRefresh={() => { receivables.refetch(); payments.refetch(); }}>
+    <Screen
+      refreshing={receivables.isRefetching}
+      onRefresh={() => {
+        receivables.refetch();
+        payments.refetch();
+      }}
+    >
       <Card style={{ gap: spacing.xs }}>
         <Text variant="title">{c.name}</Text>
         <Text tone="muted">Saldo devedor</Text>
-        <Text variant="hero" tone={balance > 0 ? 'danger' : 'success'}>{formatBRL(balance)}</Text>
+        <Text variant="hero" tone={balance > 0 ? 'danger' : 'success'}>
+          {formatBRL(balance)}
+        </Text>
         {overdueDays > 0 ? (
           <Badge label={`${overdueDays} ${overdueDays === 1 ? 'dia' : 'dias'} de atraso`} tone="danger" />
         ) : oldest ? (
-          <Text variant="caption" tone="muted">Próximo vencimento: {formatDate(oldest)}</Text>
+          <Text variant="caption" tone="muted">
+            Próximo vencimento: {formatDate(oldest)}
+          </Text>
         ) : null}
       </Card>
 
       <View style={{ gap: spacing.sm }}>
         {balance > 0 ? (
-          <Button title="Registrar pagamento" icon="cash" variant="success" onPress={() => setPanel(panel === 'receive' ? 'none' : 'receive')} />
+          <Button
+            title="Registrar pagamento"
+            icon="cash"
+            variant="success"
+            onPress={() => setPanel(panel === 'receive' ? 'none' : 'receive')}
+          />
         ) : null}
         {balance > 0 ? (
-          <Button title="Cobrar pelo WhatsApp" icon="logo-whatsapp" variant="secondary" onPress={() => {
+          <Button
+            title="Cobrar pelo WhatsApp"
+            icon="logo-whatsapp"
+            variant="secondary"
+            onPress={() => {
+              if (!hasFeature(entitlements.data, 'charge_messages')) {
+                router.push({ pathname: '/subscription', params: { reason: 'charge' } });
+                return;
+              }
               if (panel !== 'message') {
                 setMessage(
                   buildChargeMessage({
@@ -119,21 +145,42 @@ export default function CustomerCharge() {
             }}
           />
         ) : null}
-        <Button title="Lançar fiado manual" icon="add-circle" variant="outline" onPress={() => setPanel(panel === 'new' ? 'none' : 'new')} />
+        <Button
+          title="Lançar fiado manual"
+          icon="add-circle"
+          variant="outline"
+          onPress={() => setPanel(panel === 'new' ? 'none' : 'new')}
+        />
       </View>
 
       {panel === 'receive' ? (
         <Card style={{ gap: spacing.md }}>
           <Text variant="subtitle">Receber pagamento</Text>
-          <FormField control={payForm.control} name="amount" label="Valor recebido" mask="money" placeholder="0,00" />
-          <Button title={`Valor total: ${formatBRL(balance)}`} size="sm" variant="ghost" fullWidth={false} onPress={() => payForm.setValue('amount', maskMoneyDigits(String(balance)))} />
+          <FormField
+            control={payForm.control}
+            name="amount"
+            label="Valor recebido"
+            mask="money"
+            placeholder="0,00"
+          />
+          <Button
+            title={`Valor total: ${formatBRL(balance)}`}
+            size="sm"
+            variant="ghost"
+            fullWidth={false}
+            onPress={() => payForm.setValue('amount', maskMoneyDigits(String(balance)))}
+          />
           <Controller
             control={payForm.control}
             name="method"
-            render={({ field }) => <Chips options={METHOD_OPTIONS} value={field.value} onChange={field.onChange} />}
+            render={({ field }) => (
+              <Chips options={METHOD_OPTIONS} value={field.value} onChange={field.onChange} />
+            )}
           />
           <FormField control={payForm.control} name="notes" label="Observação (opcional)" />
-          <Text variant="caption" tone="muted">Pagamentos parciais abatem primeiro os fiados mais antigos.</Text>
+          <Text variant="caption" tone="muted">
+            Pagamentos parciais abatem primeiro os fiados mais antigos.
+          </Text>
           <Button
             title="Confirmar recebimento"
             icon="checkmark"
@@ -142,11 +189,18 @@ export default function CustomerCharge() {
               const amount = parseBRL(v.amount) ?? 0;
               if (amount > balance) return toast.show(`O valor máximo é ${formatBRL(balance)}.`, 'error');
               try {
-                await receive.mutateAsync({ amountCents: amount, method: v.method, notes: v.notes.trim() || null, idempotencyKey: payKey });
+                await receive.mutateAsync({
+                  amountCents: amount,
+                  method: v.method,
+                  notes: v.notes.trim() || null,
+                  idempotencyKey: payKey,
+                });
                 setPayKey(newIdempotencyKey());
                 payForm.reset();
                 setPanel('none');
-                toast.show(amount === balance ? 'Dívida quitada! 🎉' : `Pagamento de ${formatBRL(amount)} registrado.`);
+                toast.show(
+                  amount === balance ? 'Dívida quitada! 🎉' : `Pagamento de ${formatBRL(amount)} registrado.`,
+                );
               } catch (e) {
                 toast.show(errorMessage(e), 'error');
               }
@@ -159,24 +213,48 @@ export default function CustomerCharge() {
         <Card style={{ gap: spacing.md }}>
           <Text variant="subtitle">Mensagem de cobrança</Text>
           <TextField value={message} onChangeText={setMessage} multiline style={{ minHeight: 180 }} />
-          {!c.phone ? <Text variant="caption" tone="warning">Cliente sem telefone: você escolherá o contato no WhatsApp.</Text> : null}
+          {!c.phone ? (
+            <Text variant="caption" tone="warning">
+              Cliente sem telefone: você escolherá o contato no WhatsApp.
+            </Text>
+          ) : null}
           <Button
             title="Abrir no WhatsApp"
             icon="logo-whatsapp"
             variant="success"
-            onPress={() => Linking.openURL(whatsappUrl(c.phone, message)).catch(() => toast.show('Não foi possível abrir o WhatsApp.', 'error'))}
+            onPress={() =>
+              Linking.openURL(whatsappUrl(c.phone, message)).catch(() =>
+                toast.show('Não foi possível abrir o WhatsApp.', 'error'),
+              )
+            }
           />
-          <Text variant="caption" tone="muted">A mensagem só é enviada quando você tocar em enviar no WhatsApp.</Text>
+          <Text variant="caption" tone="muted">
+            A mensagem só é enviada quando você tocar em enviar no WhatsApp.
+          </Text>
         </Card>
       ) : null}
 
       {panel === 'new' ? (
         <Card style={{ gap: spacing.md }}>
           <Text variant="subtitle">Novo fiado manual</Text>
-          <Text variant="caption" tone="muted">Use para dívidas anteriores ao app. Vendas fiado criam o registro automaticamente.</Text>
-          <FormField control={newForm.control} name="description" label="Descrição" placeholder="Ex.: Compras de setembro" />
+          <Text variant="caption" tone="muted">
+            Use para dívidas anteriores ao app. Vendas fiado criam o registro automaticamente.
+          </Text>
+          <FormField
+            control={newForm.control}
+            name="description"
+            label="Descrição"
+            placeholder="Ex.: Compras de setembro"
+          />
           <FormField control={newForm.control} name="amount" label="Valor" mask="money" placeholder="0,00" />
-          <FormField control={newForm.control} name="dueDate" label="Vencimento" mask="date" placeholder="DD/MM/AAAA" hint="Vazio = hoje" />
+          <FormField
+            control={newForm.control}
+            name="dueDate"
+            label="Vencimento"
+            mask="date"
+            placeholder="DD/MM/AAAA"
+            hint="Vazio = hoje"
+          />
           <Button
             title="Salvar fiado"
             icon="save"
@@ -208,13 +286,24 @@ export default function CustomerCharge() {
             return (
               <Card key={r.id} style={{ gap: 4 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: spacing.sm }}>
-                  <Text bold style={{ flex: 1 }}>{r.description}</Text>
-                  <Badge label={late ? 'Atrasado' : STATUS[r.status].label} tone={late ? 'danger' : STATUS[r.status].tone} />
+                  <Text bold style={{ flex: 1 }}>
+                    {r.description}
+                  </Text>
+                  <Badge
+                    label={late ? 'Atrasado' : STATUS[r.status].label}
+                    tone={late ? 'danger' : STATUS[r.status].tone}
+                  />
                 </View>
                 <KeyValue label="Valor" value={formatBRL(r.amount_cents)} />
-                {r.paid_cents > 0 ? <KeyValue label="Pago" value={formatBRL(r.paid_cents)} tone="success" /> : null}
-                {r.status !== 'paid' ? <KeyValue label="Restante" value={formatBRL(r.amount_cents - r.paid_cents)} tone="danger" /> : null}
-                <Text variant="caption" tone="muted">Vencimento {formatDate(r.due_date)}</Text>
+                {r.paid_cents > 0 ? (
+                  <KeyValue label="Pago" value={formatBRL(r.paid_cents)} tone="success" />
+                ) : null}
+                {r.status !== 'paid' ? (
+                  <KeyValue label="Restante" value={formatBRL(r.amount_cents - r.paid_cents)} tone="danger" />
+                ) : null}
+                <Text variant="caption" tone="muted">
+                  Vencimento {formatDate(r.due_date)}
+                </Text>
               </Card>
             );
           })
@@ -235,9 +324,20 @@ export default function CustomerCharge() {
               onPress={
                 !p.reversed_at && business.isManager
                   ? async () => {
-                      if (!(await confirm('Estornar pagamento', `Estornar ${formatBRL(p.amount_cents)}? O valor volta a ficar em aberto.`, 'Estornar', true))) return;
+                      if (
+                        !(await confirm(
+                          'Estornar pagamento',
+                          `Estornar ${formatBRL(p.amount_cents)}? O valor volta a ficar em aberto.`,
+                          'Estornar',
+                          true,
+                        ))
+                      )
+                        return;
                       try {
-                        await reverse.mutateAsync({ paymentId: p.id, reason: 'Estorno solicitado pelo usuário' });
+                        await reverse.mutateAsync({
+                          paymentId: p.id,
+                          reason: 'Estorno solicitado pelo usuário',
+                        });
                         toast.show('Pagamento estornado.');
                       } catch (e) {
                         toast.show(errorMessage(e), 'error');
@@ -249,7 +349,9 @@ export default function CustomerCharge() {
           ))
         )}
         {business.isManager && (payments.data ?? []).some((p) => !p.reversed_at) ? (
-          <Text variant="caption" tone="muted">Toque em um pagamento para estorná-lo.</Text>
+          <Text variant="caption" tone="muted">
+            Toque em um pagamento para estorná-lo.
+          </Text>
         ) : null}
       </Section>
     </Screen>

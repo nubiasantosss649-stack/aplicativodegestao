@@ -3,17 +3,18 @@
 **Seu negócio organizado, suas vendas crescendo.**
 
 Aplicativo de gestão para MEIs e pequenos negócios (mercadinhos, lojas de roupas, salões, prestadores de
-serviço): vendas, estoque, clientes, fiados e financeiro — com assistente de IA e plano Pro nas próximas fases.
+serviço): vendas, estoque, clientes, fiados e financeiro, com Plano Grátis e assinatura Pro IA (assistente de IA na Fase 3).
 
-> Status: **Fase 1 (sistema principal) concluída.** Monetização (Fase 2), IA/relatórios (Fase 3) e
+> Status: **Fases 1 (sistema principal) e 2 (monetização) concluídas.** IA/relatórios (Fase 3) e
 > publicação (Fase 4) ainda não foram implementadas.
 
 ## Stack
 
 Expo SDK 57 · React Native 0.86 · TypeScript · Expo Router · Supabase (Auth, PostgreSQL com RLS, Storage) ·
-TanStack Query · React Hook Form + Zod · Jest.
+TanStack Query · React Hook Form + Zod · RevenueCat (assinaturas) · Jest.
 
-Documentação: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) e [`docs/DATABASE.md`](docs/DATABASE.md).
+Documentação: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), [`docs/DATABASE.md`](docs/DATABASE.md) e
+[`docs/SUBSCRIPTIONS.md`](docs/SUBSCRIPTIONS.md) (planos, RevenueCat, lojas e testes em sandbox).
 
 ## Como executar
 
@@ -30,7 +31,12 @@ Opção A — projeto na nuvem:
 
 Opção B — local (requer Docker): `npx supabase start` (usa `supabase/config.toml` e aplica as migrations).
 
-### 2. App
+### 2. Assinaturas (opcional para desenvolvimento)
+
+Siga [`docs/SUBSCRIPTIONS.md`](docs/SUBSCRIPTIONS.md) para configurar lojas, RevenueCat, segredos e Edge
+Functions. Sem essa configuração o app funciona no Plano Grátis e não oferece compra.
+
+### 3. App
 
 ```bash
 cp .env.example .env      # preencha EXPO_PUBLIC_SUPABASE_URL e EXPO_PUBLIC_SUPABASE_ANON_KEY

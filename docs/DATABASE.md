@@ -8,6 +8,7 @@ Migrations em `supabase/migrations` (aplicadas em ordem):
 | `…0200_rls_and_grants.sql` | RLS em todas as tabelas, privilégios por coluna, funções de autorização |
 | `…0300_business_functions.sql` | RPCs transacionais e relatórios |
 | `…0400_storage.sql` | Bucket privado `product-photos` e políticas por negócio |
+| `…0500_plans_subscriptions.sql` | Planos/limites, cálculo do plano, gatilhos de limite, eventos RevenueCat |
 
 ## Tabelas
 
@@ -25,6 +26,9 @@ Migrations em `supabase/migrations` (aplicadas em ordem):
 | `quotes`, `quote_items`, `documents` | Orçamentos e histórico de documentos (UI na Fase 3) |
 | `subscriptions` | Estado da assinatura (escrita só pelo backend — Fase 2) |
 | `ai_usage` | Consumo mensal de IA (Fase 3) |
+| `app_settings` | Configurações (ambientes de assinatura aceitos, entitlement) |
+| `plans` | Limites e recursos de cada plano (configuráveis) |
+| `subscription_events` | Log idempotente dos webhooks do RevenueCat |
 | `audit_logs` | Auditoria (vendas, cancelamentos, estoque, recebimentos) |
 | `business_counters` | Numeração sequencial por negócio |
 
@@ -41,6 +45,10 @@ Migrations em `supabase/migrations` (aplicadas em ordem):
 | `receive_payment` | membro | Recebimento parcial/total, rateio FIFO, idempotente |
 | `reverse_receivable_payment` | dono/gerente | Estorno de recebimento |
 | `pay_financial_entry` | dono/gerente | Quita conta a pagar |
+| `get_entitlements` | membro | Plano, limites, uso do mês e situação da assinatura (detalhes só para o dono) |
+| `business_plan` | membro | `free` ou `pro` (plano do dono) |
+| `apply_revenuecat_event` | **service_role** | Webhook RevenueCat idempotente e resistente a eventos fora de ordem |
+| `upsert_subscription_state` | **service_role** | Estado autoritativo vindo da API REST do RevenueCat |
 | `dashboard_summary` | membro | Indicadores do período (lucro/despesas ocultos para vendedor) |
 | `finance_summary` | dono/gerente | Fluxo de caixa e resultado |
 | `customer_balances` | membro | Saldo devedor, atraso, total gasto, última compra |
@@ -53,3 +61,9 @@ Migrations em `supabase/migrations` (aplicadas em ordem):
 direta, venda mista, idempotência, rollback por falta de estoque, pagamento divergente, fiado sem cliente,
 entrada/ajuste de estoque, recebimento FIFO, estorno, cancelamento, faturamento × recebido × lucro,
 isolamento entre usuários (RLS), limites do vendedor e políticas do Storage.
+
+`supabase/tests/20_plans_subscriptions.sql` cobre: limite de 30 produtos (inclusive reativação) e de 50 vendas
+no mês, bloqueio de escrita de assinaturas pelo app, compra sandbox recusada em produção, teste grátis,
+evento duplicado, evento fora de ordem, cancelamento vigente, reativação, período de tolerância, outro
+entitlement, usuário desconhecido, expiração (dados continuam acessíveis), sincronização REST e projeto de
+testes aceitando sandbox.

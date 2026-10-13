@@ -33,7 +33,11 @@ export const TERMS: LegalDoc = {
       body: 'Os dados do seu negócio pertencem a você. Você pode consultá-los, exportá-los e solicitar a exclusão da conta a qualquer momento.',
     },
     {
-      heading: '6. Limitação de responsabilidade',
+      heading: '6. Planos e assinatura',
+      body: 'O Plano Grátis tem limites de produtos e vendas mensais. O Pro IA é uma assinatura mensal com renovação automática, cobrada pela Google Play ou App Store, que pode ser cancelada a qualquer momento na loja. Após o cancelamento, o Pro vale até o fim do período pago e os dados continuam disponíveis para consulta e exportação.',
+    },
+    {
+      heading: '7. Limitação de responsabilidade',
       body: 'Os indicadores (como lucro estimado) são calculados a partir dos dados informados e servem como apoio à gestão, não como aconselhamento contábil.',
     },
   ],
@@ -65,7 +69,7 @@ export const PRIVACY: LegalDoc = {
     },
     {
       heading: 'Operadores',
-      body: 'Utilizamos Supabase (banco de dados e autenticação). Nas próximas versões: RevenueCat (assinaturas) e um provedor de IA, que recebe apenas dados agregados necessários para responder às suas perguntas.',
+      body: 'Utilizamos Supabase (banco de dados e autenticação) e RevenueCat (gestão de assinaturas, que recebe apenas o identificador da conta e os dados da compra informados pela loja). Na próxima versão: um provedor de IA, que receberá apenas dados agregados necessários para responder às suas perguntas.',
     },
   ],
 };

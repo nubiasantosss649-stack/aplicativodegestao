@@ -33,3 +33,7 @@ create table if not exists storage.objects (
 );
 alter table storage.objects enable row level security;
 grant select, insert, update, delete on storage.objects to authenticated;
+
+-- No Supabase, service_role tem acesso total às tabelas do schema public
+alter default privileges in schema public grant all on tables to service_role;
+alter default privileges in schema public grant all on sequences to service_role;
