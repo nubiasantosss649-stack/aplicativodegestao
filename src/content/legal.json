@@ -1,0 +1,38 @@
+{
+  "contact": {
+    "controller": "[PREENCHER: nome ou razão social do responsável pelo app, com CPF/CNPJ]",
+    "email": "[PREENCHER: e-mail de suporte e privacidade]",
+    "dpo": "[PREENCHER: nome do encarregado de dados (DPO) ou o mesmo e-mail de suporte]"
+  },
+  "terms": {
+    "title": "Termos de Uso",
+    "updatedAt": "16/10/2026",
+    "sections": [
+      { "heading": "1. O serviço", "body": "O Gestão Fácil IA é um aplicativo de gestão para pequenos negócios: controle de vendas, estoque, clientes, fiados, finanças, recibos e orçamentos. Os comprovantes, recibos e orçamentos gerados NÃO possuem valor fiscal e não substituem a nota fiscal." },
+      { "heading": "2. Cadastro e conta", "body": "Você é responsável pelas informações cadastradas e pela segurança da sua senha. O cadastro pode ser feito com CPF, CNPJ ou sem documento. É proibido usar o app para atividades ilegais." },
+      { "heading": "3. Pagamentos registrados", "body": "O aplicativo apenas REGISTRA pagamentos informados por você (dinheiro, Pix, cartão e fiado). Não processamos pagamentos e não acessamos contas bancárias." },
+      { "heading": "4. Cobranças", "body": "Mensagens de cobrança são enviadas somente por ação sua, pelo WhatsApp. Você é responsável por cobrar de forma respeitosa e de acordo com o Código de Defesa do Consumidor." },
+      { "heading": "5. Planos e assinatura", "body": "O Plano Grátis tem limite de 30 produtos ativos e 50 vendas por mês. O Pro IA é uma assinatura mensal com renovação automática, cobrada pela Google Play ou App Store na sua conta da loja, que pode ser cancelada a qualquer momento nas configurações da loja com pelo menos 24 horas de antecedência da renovação. Após o cancelamento, o Pro vale até o fim do período pago. Quando oferecido, o período de teste grátis é convertido em assinatura paga ao final, salvo cancelamento antes. Reembolsos seguem as regras da loja." },
+      { "heading": "6. Assistente IA", "body": "O Assistente IA explica os números calculados pelo próprio aplicativo a partir dos seus dados. As respostas são geradas automaticamente e podem conter imprecisões; confira valores importantes nos relatórios. O assistente não presta aconselhamento jurídico, contábil ou financeiro." },
+      { "heading": "7. Seus dados", "body": "Os dados do seu negócio pertencem a você. Você pode consultá-los, exportá-los em Excel e excluir sua conta a qualquer momento pelo aplicativo. Mesmo sem assinatura, seus dados continuam disponíveis para consulta e exportação." },
+      { "heading": "8. Limitação de responsabilidade", "body": "Indicadores como lucro estimado, recomendações de estoque e sugestões de preço servem de apoio à gestão e dependem dos dados informados por você. Não substituem a orientação de um contador." },
+      { "heading": "9. Alterações e contato", "body": "Podemos atualizar estes termos; mudanças relevantes serão avisadas no aplicativo. Dúvidas: {email}. Responsável: {controller}. Foro: comarca do domicílio do consumidor." }
+    ]
+  },
+  "privacy": {
+    "title": "Política de Privacidade",
+    "updatedAt": "16/10/2026",
+    "sections": [
+      { "heading": "Quem somos", "body": "O controlador dos dados da sua conta é {controller}. Encarregado de dados (DPO): {dpo}. Contato: {email}." },
+      { "heading": "Dados coletados", "body": "Conta: nome, e-mail e telefone (opcional). Negócio: nome, tipo, CPF/CNPJ (opcional) e telefone. Registros que você cria: produtos e fotos, estoque, vendas, clientes, fiados, lançamentos financeiros, recibos e orçamentos. Assinatura: identificador da conta e situação da compra informada pela loja. Não coletamos localização, contatos do aparelho nem dados de pagamento de cartão." },
+      { "heading": "Finalidades e bases legais", "body": "Prestar o serviço contratado (execução de contrato), autenticar seu acesso e manter a segurança (legítimo interesse), gerenciar a assinatura (execução de contrato) e cumprir obrigações legais. Não vendemos dados e não usamos seus dados para publicidade." },
+      { "heading": "Dados de clientes do seu negócio", "body": "Em relação aos dados dos seus clientes (nome, telefone, endereço), você é o controlador e nós somos operadores. Cadastre apenas o necessário e use-os somente para a relação comercial." },
+      { "heading": "Compartilhamento (operadores)", "body": "Supabase (banco de dados, autenticação e armazenamento de arquivos); RevenueCat (gestão de assinaturas: identificador da conta e dados da compra informados pela Google Play/App Store); Anthropic (Claude), somente quando você usa o Assistente IA no plano Pro: a pergunta e os resultados das consultas necessários para respondê-la (totais, nomes de produtos e de clientes devedores, sem telefones). Os números são calculados pelo nosso sistema; a IA apenas os explica. Esses provedores podem processar dados fora do Brasil, com salvaguardas contratuais." },
+      { "heading": "Segurança", "body": "Comunicação criptografada (HTTPS), isolamento de dados por negócio com regras de acesso no banco de dados (Row Level Security), sessão guardada no armazenamento seguro do aparelho (Keychain/Keystore), operações financeiras registradas em trilha de auditoria e chaves secretas somente no servidor." },
+      { "heading": "Retenção", "body": "Mantemos os dados enquanto a conta estiver ativa. Ao excluir a conta, os dados são apagados imediatamente do banco de dados; cópias de segurança do provedor são eliminadas automaticamente no ciclo de retenção (até 30 dias). Registros mínimos exigidos por lei ou necessários para prevenir fraudes podem ser mantidos pelo prazo legal." },
+      { "heading": "Seus direitos (LGPD)", "body": "Você pode confirmar o tratamento, acessar, corrigir, exportar (Configurações → Exportar meus dados) e excluir seus dados (Configurações → Excluir minha conta), além de revogar consentimentos e reclamar à ANPD. Também é possível solicitar a exclusão pela página de exclusão de conta ou pelo e-mail {email}." },
+      { "heading": "Crianças", "body": "O aplicativo é destinado a maiores de 18 anos responsáveis por um negócio e não é direcionado a crianças." },
+      { "heading": "Alterações", "body": "Esta política pode ser atualizada; avisaremos no aplicativo sobre mudanças relevantes." }
+    ]
+  }
+}

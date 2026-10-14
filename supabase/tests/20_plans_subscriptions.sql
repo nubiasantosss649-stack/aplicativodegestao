@@ -22,6 +22,7 @@ create or replace function pg_temp.rc_event(
     'event_timestamp_ms', (extract(epoch from p_event_at) * 1000)::bigint
   ) || p_extra);
 $$;
+grant execute on function pg_temp.rc_event(text, text, text, timestamptz, timestamptz, text, text, jsonb) to service_role;
 
 -- ---------------------------------------------------------------------
 -- Plano Grátis: limite de produtos e de vendas no mês

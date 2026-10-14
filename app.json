@@ -8,11 +8,33 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.gestaofacilia.app",
       "infoPlist": {
         "NSCameraUsageDescription": "A câmera é usada para ler o código de barras dos produtos.",
-        "NSPhotoLibraryUsageDescription": "Acesso às fotos para adicionar imagens aos produtos."
+        "NSPhotoLibraryUsageDescription": "Acesso às fotos para adicionar imagens aos produtos.",
+        "CFBundleDevelopmentRegion": "pt-BR",
+        "CFBundleAllowMixedLocalizations": true
+      },
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "privacyManifests": {
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1"
+            ]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "C617.1"
+            ]
+          }
+        ],
+        "NSPrivacyTracking": false
       }
     },
     "android": {
@@ -23,8 +45,17 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "permissions": ["android.permission.CAMERA"],
-      "predictiveBackGestureEnabled": false
+      "permissions": [
+        "android.permission.CAMERA"
+      ],
+      "predictiveBackGestureEnabled": false,
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_MEDIA_VIDEO",
+        "android.permission.READ_MEDIA_AUDIO",
+        "android.permission.SYSTEM_ALERT_WINDOW"
+      ],
+      "allowBackup": false
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -58,6 +89,8 @@
     ],
     "experiments": {
       "typedRoutes": false
-    }
+    },
+    "description": "Gestão de vendas, estoque, clientes, fiados e finanças para pequenos negócios, com Assistente IA.",
+    "primaryColor": "#1E40AF"
   }
 }

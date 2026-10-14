@@ -85,6 +85,14 @@ export default function Settings() {
         ) : null}
         <ListItem icon="document-text" title="Termos de Uso" chevron onPress={() => router.push('/terms')} />
         <ListItem icon="shield-checkmark" title="Política de Privacidade" chevron onPress={() => router.push('/privacy')} />
+        <ListItem
+          icon="trash"
+          iconTone="danger"
+          title="Excluir minha conta"
+          subtitle="Apaga definitivamente sua conta e seus dados"
+          chevron
+          onPress={() => router.push('/settings/delete-account')}
+        />
       </Section>
 
       <Button

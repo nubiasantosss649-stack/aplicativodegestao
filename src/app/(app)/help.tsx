@@ -3,10 +3,10 @@ import { Linking, Pressable, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { Button, Card, Screen, Section, Text } from '@/components/ui';
+import { SUPPORT_EMAIL } from '@/content/legal';
 import { spacing } from '@/theme/colors';
 import { useTheme } from '@/theme/ThemeProvider';
 
-const SUPPORT_EMAIL = 'suporte@gestaofacilia.com.br';
 
 const FAQ = [
   {
@@ -72,7 +72,8 @@ export default function Help() {
         />
         <Pressable onPress={() => Linking.openURL(`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent('Solicitação LGPD')}`)}>
           <Text variant="caption" tone="muted" center>
-            Para exportação ou exclusão de dados (LGPD), envie uma solicitação para {SUPPORT_EMAIL}.
+            Exporte seus dados em Configurações → Exportar meus dados e exclua a conta em Configurações → Excluir minha conta.
+            Outras solicitações de privacidade (LGPD): {SUPPORT_EMAIL}.
           </Text>
         </Pressable>
       </Section>
