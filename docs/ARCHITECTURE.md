@@ -54,7 +54,7 @@ src/
   __tests__/               # Testes unitários (Jest)
 supabase/
   migrations/              # Esquema, RLS, funções, storage, planos/assinaturas
-  functions/               # Edge Functions (Deno): revenuecat-webhook, sync-subscription
+  functions/               # Edge Functions (Deno): revenuecat-webhook, sync-subscription, ai-assistant
   tests/                   # Testes SQL de integração (RLS, atomicidade, idempotência)
 scripts/test-db.sh         # Sobe um Postgres descartável e roda migrations + testes
 docs/                      # Esta documentação
@@ -90,7 +90,9 @@ Uma venda fiado **nunca** conta como dinheiro recebido até o pagamento ser regi
 - **Fase 2 (concluída):** planos Grátis/Pro, RevenueCat (Android/iOS), tela Pro, teste grátis vindo da loja,
   limites por plano no banco, restauração de compras, webhook seguro e sincronização (Edge Functions).
   Detalhes em `docs/SUBSCRIPTIONS.md`.
-- **Fase 3:** Assistente IA (Edge Function + consultas determinísticas + controle de cota em `ai_usage`),
-  relatórios avançados, exportação PDF/Excel, recibos e orçamentos, sugestões.
+- **Fase 3 (concluída):** Assistente IA (Edge Function + Claude + consultas SQL determinísticas + cota em
+  `ai_usage`), relatórios avançados, recomendações de estoque e preço, alertas de prejuízo, exportação PDF e
+  Excel (.xlsx gerado no próprio app), recibos e orçamentos, exportação completa dos dados (LGPD) e índices de
+  desempenho. Detalhes em `docs/AI.md`.
 - **Fase 4:** builds EAS, ícone/splash finais, capturas, políticas revisadas, exclusão de conta (Edge Function),
   testes de segurança, publicação.

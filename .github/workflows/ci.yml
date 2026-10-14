@@ -43,5 +43,5 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      - run: deno check revenuecat-webhook/index.ts sync-subscription/index.ts
+      - run: deno check revenuecat-webhook/index.ts sync-subscription/index.ts ai-assistant/index.ts
         working-directory: supabase/functions

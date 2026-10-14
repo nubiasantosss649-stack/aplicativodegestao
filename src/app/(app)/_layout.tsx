@@ -41,6 +41,13 @@ export default function AppLayout() {
         <Stack.Screen name="help" options={{ title: 'Ajuda e suporte' }} />
         <Stack.Screen name="subscription/index" options={{ title: 'Assinatura Pro', presentation: 'modal' }} />
         <Stack.Screen name="subscription/manage" options={{ title: 'Minha assinatura' }} />
+        <Stack.Screen name="assistant" options={{ title: 'Assistente IA' }} />
+        <Stack.Screen name="reports/index" options={{ title: 'Relatórios' }} />
+        <Stack.Screen name="insights" options={{ title: 'Recomendações' }} />
+        <Stack.Screen name="documents/index" options={{ title: 'Recibos e orçamentos' }} />
+        <Stack.Screen name="quotes/new" options={{ title: 'Novo orçamento' }} />
+        <Stack.Screen name="quotes/[id]" options={{ title: 'Orçamento' }} />
+        <Stack.Screen name="receipts/new" options={{ title: 'Novo recibo' }} />
       </Stack>
     </CartProvider>
   );

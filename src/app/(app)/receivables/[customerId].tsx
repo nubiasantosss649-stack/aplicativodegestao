@@ -2,7 +2,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Linking, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { Linking, Pressable, View } from 'react-native';
 
 import {
   Badge,
@@ -22,6 +23,11 @@ import {
   useToast,
 } from '@/components/ui';
 import { useCustomer } from '@/features/customers/api';
+import { registerDocument } from '@/features/documents/api';
+import { buildReceiptHtml } from '@/features/documents/templates';
+import { shareHtmlAsPdf } from '@/features/sales/share';
+import { useTheme } from '@/theme/ThemeProvider';
+import type { ReceivablePayment } from '@/types/database';
 import { useEntitlements } from '@/features/subscription/api';
 import { hasFeature } from '@/features/subscription/plans';
 import { METHOD_OPTIONS } from '@/features/finance/api';
@@ -65,6 +71,7 @@ export default function CustomerCharge() {
   const createReceivable = useCreateReceivable(business.id, customerId);
   const reverse = useReversePayment(business.id, customerId);
   const entitlements = useEntitlements(business.id);
+  const { colors } = useTheme();
   const [payKey, setPayKey] = useState(newIdempotencyKey);
   const [panel, setPanel] = useState<'none' | 'receive' | 'new' | 'message'>('none');
   const [message, setMessage] = useState('');
@@ -87,6 +94,27 @@ export default function CustomerCharge() {
   if (customer.error || !customer.data)
     return <ErrorState error={customer.error} onRetry={customer.refetch} />;
   const c = customer.data;
+
+  const shareReceipt = async (p: ReceivablePayment) => {
+    try {
+      const doc = await registerDocument(business.id, 'payment_receipt', p.id, `Pagamento de ${c.name}`, p.amount_cents, {
+        customer: c.name,
+      });
+      await shareHtmlAsPdf(
+        buildReceiptHtml(business, {
+          number: doc.number,
+          date: p.paid_at.slice(0, 10),
+          payerName: c.name,
+          amountCents: p.amount_cents,
+          description: 'pagamento de compras a prazo (fiado)',
+          method: p.method === 'credit' ? null : p.method,
+        }),
+        `Recibo nº ${doc.number}`,
+      );
+    } catch (e) {
+      toast.show(errorMessage(e), 'error');
+    }
+  };
 
   return (
     <Screen
@@ -319,6 +347,13 @@ export default function CustomerCharge() {
               key={p.id}
               icon={p.reversed_at ? 'arrow-undo' : 'cash'}
               iconTone={p.reversed_at ? 'danger' : 'success'}
+              right={
+                p.reversed_at ? undefined : (
+                  <Pressable accessibilityLabel="Gerar recibo do pagamento" hitSlop={10} onPress={() => shareReceipt(p)}>
+                    <Ionicons name="receipt-outline" size={24} color={colors.primary} />
+                  </Pressable>
+                )
+              }
               title={`${formatBRL(p.amount_cents)} · ${PAYMENT_LABELS[p.method]}`}
               subtitle={`${formatDateTime(p.paid_at)}${p.reversed_at ? ` · ESTORNADO (${p.reversal_reason})` : ''}${p.notes ? ` · ${p.notes}` : ''}`}
               onPress={

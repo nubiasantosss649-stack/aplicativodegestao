@@ -13,10 +13,19 @@ interface Item {
 
 const GROUPS: { title: string; items: Item[] }[] = [
   {
+    title: 'Inteligência',
+    items: [
+      { title: 'Assistente IA', subtitle: 'Pergunte sobre vendas, lucro, estoque e fiados', icon: 'sparkles', href: '/assistant' },
+      { title: 'Relatórios', subtitle: 'Lucro por produto, horários, clientes · PDF e Excel', icon: 'bar-chart', href: '/reports' },
+      { title: 'Recomendações', subtitle: 'Alertas de prejuízo, reposição e preços', icon: 'bulb', href: '/insights' },
+    ],
+  },
+  {
     title: 'Vendas e clientes',
     items: [
       { title: 'Histórico de vendas', subtitle: 'Consultar, cancelar e reenviar comprovantes', icon: 'receipt', href: '/sales' },
       { title: 'Fiados', subtitle: 'Quem está devendo e cobranças', icon: 'wallet', href: '/receivables' },
+      { title: 'Recibos e orçamentos', subtitle: 'Orçamentos, recibos e histórico de documentos', icon: 'document-text', href: '/documents' },
     ],
   },
   {

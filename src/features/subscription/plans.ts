@@ -37,7 +37,10 @@ export type ProFeature =
   | 'exports'
   | 'ai_assistant'
   | 'full_history'
-  | 'advanced_charts';
+  | 'advanced_charts'
+  | 'reports'
+  | 'insights'
+  | 'quotes_pdf';
 
 export function hasFeature(e: Entitlements | undefined, feature: ProFeature): boolean {
   return !!e && e.features.includes(feature);
@@ -104,8 +107,10 @@ export const PRO_BENEFITS: { icon: string; title: string; text: string; availabl
   { icon: 'bar-chart', title: 'Dashboard completo', text: 'Gráfico de vendas, produtos campeões e movimentações.', available: true },
   { icon: 'pie-chart', title: 'Relatório financeiro', text: 'Fluxo de caixa, lucro estimado e despesas por categoria.', available: true },
   { icon: 'logo-whatsapp', title: 'Cobranças completas', text: 'Mensagens de cobrança personalizadas pelo WhatsApp.', available: true },
-  { icon: 'sparkles', title: 'Assistente IA', text: 'Pergunte sobre vendas, lucro e estoque.', available: false },
-  { icon: 'document-text', title: 'Exportação PDF e Excel', text: 'Relatórios para contador e banco.', available: false },
+  { icon: 'sparkles', title: 'Assistente IA', text: 'Pergunte sobre vendas, lucro, estoque e fiados em português.', available: true },
+  { icon: 'stats-chart', title: 'Relatórios detalhados', text: 'Lucro por produto, categorias, horários e melhores clientes.', available: true },
+  { icon: 'bulb', title: 'Recomendações inteligentes', text: 'Alertas de prejuízo, reposição de estoque e sugestão de preços.', available: true },
+  { icon: 'document-text', title: 'Exportação PDF e Excel', text: 'Relatórios prontos para o contador e o banco.', available: true },
 ];
 
 /**

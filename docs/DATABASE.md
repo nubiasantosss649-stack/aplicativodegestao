@@ -9,6 +9,7 @@ Migrations em `supabase/migrations` (aplicadas em ordem):
 | `…0300_business_functions.sql` | RPCs transacionais e relatórios |
 | `…0400_storage.sql` | Bucket privado `product-photos` e políticas por negócio |
 | `…0500_plans_subscriptions.sql` | Planos/limites, cálculo do plano, gatilhos de limite, eventos RevenueCat |
+| `…0600_reports_ai_documents.sql` | Relatórios, recomendações, alertas, cota de IA, orçamentos, documentos, exportação, índices |
 
 ## Tabelas
 
@@ -47,6 +48,16 @@ Migrations em `supabase/migrations` (aplicadas em ordem):
 | `pay_financial_entry` | dono/gerente | Quita conta a pagar |
 | `get_entitlements` | membro | Plano, limites, uso do mês e situação da assinatura (detalhes só para o dono) |
 | `business_plan` | membro | `free` ou `pro` (plano do dono) |
+| `sales_report` | membro | Vendas por produto/categoria/pagamento/dia/hora, melhores clientes, comparação (custo/lucro só p/ gerente) |
+| `expense_comparison` | dono/gerente | Despesas por categoria: mês atual × anterior |
+| `stock_recommendations` | membro | Reposição pelo giro de 30 dias, cobertura em dias, estoque parado |
+| `pricing_insights` | dono/gerente | Produtos abaixo do custo/margem e preço sugerido |
+| `business_alerts` | dono/gerente | Alertas de possível prejuízo (9 regras) |
+| `ai_usage_status` / `ai_reserve_request` | membro | Cota mensal do Assistente IA (reserva atômica) |
+| `ai_record_tokens` / `ai_refund_request` | **service_role** | Registro de tokens / devolução da cota em falhas |
+| `save_quote` | membro | Orçamento com totais calculados no servidor |
+| `register_document` | membro | Histórico de documentos e numeração de recibos |
+| `export_business_data` | dono/gerente | Exportação completa (LGPD), em todos os planos |
 | `apply_revenuecat_event` | **service_role** | Webhook RevenueCat idempotente e resistente a eventos fora de ordem |
 | `upsert_subscription_state` | **service_role** | Estado autoritativo vindo da API REST do RevenueCat |
 | `dashboard_summary` | membro | Indicadores do período (lucro/despesas ocultos para vendedor) |

@@ -19,6 +19,9 @@ import {
   Text,
 } from '@/components/ui';
 import { useDashboard } from '@/features/dashboard/api';
+import { useBusinessAlerts } from '@/features/reports/api';
+import { useEntitlements } from '@/features/subscription/api';
+import { hasFeature } from '@/features/subscription/plans';
 import { formatDateTime, formatShortDay } from '@/lib/dates';
 import { formatBRL, formatQuantity } from '@/lib/money';
 import { useCurrentBusiness } from '@/providers/BusinessProvider';
@@ -64,6 +67,15 @@ export default function Dashboard() {
           </Card>
 
           <PlanBanner businessId={business.id} compact />
+
+          <Card onPress={() => router.push('/assistant')} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }} accessibilityLabel="Abrir Assistente IA">
+            <Text variant="title">✨</Text>
+            <View style={{ flex: 1 }}>
+              <Text bold>Pergunte ao Assistente IA</Text>
+              <Text variant="caption" tone="muted">“Qual foi meu lucro neste mês?” · “Quem está me devendo?”</Text>
+            </View>
+          </Card>
+          {business.isManager ? <AlertsCard businessId={business.id} /> : null}
 
           <PeriodFilter value={period} onChange={setPeriod} />
 
@@ -218,5 +230,24 @@ export default function Dashboard() {
         </>
       )}
     </Screen>
+  );
+}
+
+/** Alertas de possíveis prejuízos (Pro). */
+function AlertsCard({ businessId }: { businessId: string }) {
+  const entitlements = useEntitlements(businessId);
+  const enabled = hasFeature(entitlements.data, 'insights');
+  const { data } = useBusinessAlerts(businessId, enabled);
+  if (!enabled || !data || data.length === 0) return null;
+  const high = data.filter((a) => a.severity === 'high').length;
+  return (
+    <Card onPress={() => router.push('/insights')} style={{ gap: 4 }} accessibilityLabel="Ver alertas">
+      <Text bold tone={high ? 'danger' : 'warning'}>
+        ⚠️ {data.length} {data.length === 1 ? 'alerta' : 'alertas'} de possível prejuízo
+      </Text>
+      <Text variant="caption" tone="muted" numberOfLines={2}>
+        {data.slice(0, 2).map((a) => a.title).join(' · ')}
+      </Text>
+    </Card>
   );
 }

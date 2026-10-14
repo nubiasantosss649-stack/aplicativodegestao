@@ -61,6 +61,7 @@ describe('Tela Pro', () => {
     expect(screen.getByText('Assinaturas indisponíveis nesta versão')).toBeTruthy();
     expect(screen.queryByText('Assinar o Pro IA')).toBeNull();
     expect(screen.queryByText(/grátis$/)).toBeNull();
-    expect(screen.getAllByText('Em breve').length).toBeGreaterThan(0);
+    expect(screen.queryByText('Em breve')).toBeNull();
+    expect(screen.getAllByText('Assistente IA').length).toBeGreaterThan(0);
   });
 });

@@ -195,6 +195,11 @@ export default function Paywall() {
           <KeyValue label="Dashboard" value="Simplificado  ·  Completo" />
           <KeyValue label="Relatório financeiro" value="—  ·  Pro" />
           <KeyValue label="Cobrança no WhatsApp" value="—  ·  Pro" />
+          <KeyValue label="Assistente IA" value="—  ·  200 perguntas/mês" />
+          <KeyValue label="Relatórios e recomendações" value="—  ·  Pro" />
+          <KeyValue label="Exportar relatórios PDF/Excel" value="—  ·  Pro" />
+          <KeyValue label="Recibos e orçamentos" value="Ambos os planos" />
+          <KeyValue label="Exportar todos os seus dados" value="Ambos os planos" />
         </Card>
       </Section>
 

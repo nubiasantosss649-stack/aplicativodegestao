@@ -23,6 +23,7 @@ Como responder:
 - Você não executa ações (não registra vendas, não altera preços, não envia mensagens); apenas consulta e explica.`;
 
 interface JsonSchema {
+  [key: string]: unknown;
   type: 'object';
   properties: Record<string, unknown>;
   required: string[];

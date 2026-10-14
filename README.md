@@ -3,18 +3,20 @@
 **Seu negócio organizado, suas vendas crescendo.**
 
 Aplicativo de gestão para MEIs e pequenos negócios (mercadinhos, lojas de roupas, salões, prestadores de
-serviço): vendas, estoque, clientes, fiados e financeiro, com Plano Grátis e assinatura Pro IA (assistente de IA na Fase 3).
+serviço): vendas, estoque, clientes, fiados, financeiro, relatórios, recibos e orçamentos, com Plano Grátis e
+assinatura Pro IA (Assistente IA, relatórios avançados e recomendações).
 
-> Status: **Fases 1 (sistema principal) e 2 (monetização) concluídas.** IA/relatórios (Fase 3) e
-> publicação (Fase 4) ainda não foram implementadas.
+> Status: **Fases 1 (sistema principal), 2 (monetização) e 3 (IA, relatórios e documentos) concluídas.**
+> A preparação para publicação nas lojas (Fase 4) ainda não foi feita.
 
 ## Stack
 
 Expo SDK 57 · React Native 0.86 · TypeScript · Expo Router · Supabase (Auth, PostgreSQL com RLS, Storage) ·
-TanStack Query · React Hook Form + Zod · RevenueCat (assinaturas) · Jest.
+TanStack Query · React Hook Form + Zod · RevenueCat (assinaturas) · Claude (Assistente IA, via backend) · Jest.
 
 Documentação: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), [`docs/DATABASE.md`](docs/DATABASE.md) e
-[`docs/SUBSCRIPTIONS.md`](docs/SUBSCRIPTIONS.md) (planos, RevenueCat, lojas e testes em sandbox).
+[`docs/SUBSCRIPTIONS.md`](docs/SUBSCRIPTIONS.md) (planos, RevenueCat, lojas e testes em sandbox) e
+[`docs/AI.md`](docs/AI.md) (assistente, custos e cota).
 
 ## Como executar
 
@@ -36,7 +38,12 @@ Opção B — local (requer Docker): `npx supabase start` (usa `supabase/config.
 Siga [`docs/SUBSCRIPTIONS.md`](docs/SUBSCRIPTIONS.md) para configurar lojas, RevenueCat, segredos e Edge
 Functions. Sem essa configuração o app funciona no Plano Grátis e não oferece compra.
 
-### 3. App
+### 3. Assistente IA (opcional para desenvolvimento)
+
+`npx supabase secrets set ANTHROPIC_API_KEY=...` e `npx supabase functions deploy ai-assistant`
+(detalhes em [`docs/AI.md`](docs/AI.md)).
+
+### 4. App
 
 ```bash
 cp .env.example .env      # preencha EXPO_PUBLIC_SUPABASE_URL e EXPO_PUBLIC_SUPABASE_ANON_KEY

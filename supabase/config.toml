@@ -31,3 +31,6 @@ verify_jwt = false
 
 [functions.sync-subscription]
 verify_jwt = true
+
+[functions.ai-assistant]
+verify_jwt = true

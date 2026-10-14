@@ -69,7 +69,7 @@ export const PRIVACY: LegalDoc = {
     },
     {
       heading: 'Operadores',
-      body: 'Utilizamos Supabase (banco de dados e autenticação) e RevenueCat (gestão de assinaturas, que recebe apenas o identificador da conta e os dados da compra informados pela loja). Na próxima versão: um provedor de IA, que receberá apenas dados agregados necessários para responder às suas perguntas.',
+      body: 'Utilizamos Supabase (banco de dados e autenticação) e RevenueCat (gestão de assinaturas, que recebe apenas o identificador da conta e os dados da compra informados pela loja). No Assistente IA (plano Pro), as perguntas e os resultados das consultas necessários para respondê-las (totais, nomes de produtos e de clientes devedores, sem telefones) são enviados à Anthropic (Claude), que atua como operadora. Os números são calculados pelo nosso sistema; a IA apenas os explica.',
     },
   ],
 };

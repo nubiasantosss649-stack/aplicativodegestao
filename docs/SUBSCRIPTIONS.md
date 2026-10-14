@@ -47,7 +47,10 @@ Eventos repetidos (`event.id`) são ignorados; eventos mais antigos que o últim
 | Dashboard | Indicadores | + gráfico e mais vendidos |
 | Relatório financeiro (fluxo de caixa, lucro, categorias) | — | ✔ |
 | Mensagens de cobrança pelo WhatsApp | — | ✔ |
-| Assistente IA, exportação PDF/Excel | — | Fase 3 (exibidos como "Em breve") |
+| Assistente IA | — | 200 perguntas/mês (configurável) |
+| Relatórios detalhados e exportação PDF/Excel | — | ✔ |
+| Recomendações (alertas de prejuízo, reposição, preços) | — | ✔ |
+| Recibos, orçamentos e exportação completa dos dados (LGPD) | ✔ | ✔ |
 
 ## Passo a passo de configuração
 

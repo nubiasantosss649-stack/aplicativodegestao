@@ -7,6 +7,7 @@ import { useCancelSale, useSale } from '@/features/sales/api';
 import { PAYMENT_LABELS } from '@/features/sales/cart';
 import { buildSaleReceiptHtml } from '@/features/sales/receipt';
 import { shareHtmlAsPdf } from '@/features/sales/share';
+import { registerDocument } from '@/features/documents/api';
 import { formatDateTime } from '@/lib/dates';
 import { errorMessage } from '@/lib/errors';
 import { formatBRL, formatQuantity } from '@/lib/money';
@@ -86,6 +87,7 @@ export default function SaleDetail() {
           try {
             setSharing(true);
             await shareHtmlAsPdf(buildSaleReceiptHtml(business, sale), `Comprovante venda #${sale.number}`);
+            await registerDocument(business.id, 'sale_receipt', sale.id, `Venda #${sale.number}`, sale.total_cents).catch(() => null);
           } catch (e) {
             toast.show(errorMessage(e), 'error');
           } finally {
