@@ -1,0 +1,39 @@
+# Configuração para o Supabase CLI (ambiente local: `npx supabase start`).
+project_id = "gestao-facil-ia"
+
+[api]
+port = 54321
+schemas = ["public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 16
+
+[auth]
+site_url = "gestaofacil://"
+additional_redirect_urls = ["gestaofacil://auth/callback", "exp://**", "http://localhost:8081/auth/callback"]
+jwt_expiry = 3600
+enable_signup = true
+minimum_password_length = 8
+
+[auth.email]
+enable_signup = true
+enable_confirmations = true
+double_confirm_changes = true
+
+[storage]
+file_size_limit = "5MiB"
+
+[functions.revenuecat-webhook]
+verify_jwt = false
+
+[functions.sync-subscription]
+verify_jwt = true
+
+[functions.ai-assistant]
+verify_jwt = true
+
+[functions.delete-account]
+verify_jwt = true
