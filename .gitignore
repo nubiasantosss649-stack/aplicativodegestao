@@ -43,3 +43,5 @@ yarn-error.*
 # env
 .env
 supabase/functions/deno.lock
+dist-e2e/
+e2e-shots/

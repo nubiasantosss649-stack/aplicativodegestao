@@ -38,6 +38,8 @@ function RootNavigator() {
           contentStyle: { backgroundColor: colors.background },
         }}
       >
+        {/* Primeira tela: ao sair de uma área protegida o router volta para cá e o index decide o destino */}
+        <Stack.Screen name="index" />
         <Stack.Protected guard={!signedIn}>
           <Stack.Screen name="welcome" />
           <Stack.Screen name="(auth)" />

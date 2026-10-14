@@ -6,8 +6,9 @@ Aplicativo de gestão para MEIs e pequenos negócios (mercadinhos, lojas de roup
 serviço): vendas, estoque, clientes, fiados, financeiro, relatórios, recibos e orçamentos, com Plano Grátis e
 assinatura Pro IA (Assistente IA, relatórios avançados e recomendações).
 
-> Status: **Fases 1 (sistema principal), 2 (monetização) e 3 (IA, relatórios e documentos) concluídas.**
-> A preparação para publicação nas lojas (Fase 4) ainda não foi feita.
+> Status: **Fases 1 a 4 concluídas** (sistema principal, monetização, IA/relatórios/documentos e preparação para
+> as lojas). Para publicar, siga [`docs/LAUNCH.md`](docs/LAUNCH.md) — restam apenas itens que dependem das suas contas
+> e dados (marcados com 👤).
 
 ## Stack
 
@@ -16,7 +17,9 @@ TanStack Query · React Hook Form + Zod · RevenueCat (assinaturas) · Claude (A
 
 Documentação: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), [`docs/DATABASE.md`](docs/DATABASE.md) e
 [`docs/SUBSCRIPTIONS.md`](docs/SUBSCRIPTIONS.md) (planos, RevenueCat, lojas e testes em sandbox) e
-[`docs/AI.md`](docs/AI.md) (assistente, custos e cota).
+[`docs/AI.md`](docs/AI.md) (assistente, custos e cota), [`docs/LAUNCH.md`](docs/LAUNCH.md) (publicação),
+[`docs/STORE_LISTING.md`](docs/STORE_LISTING.md) (textos e privacidade das lojas), [`docs/SECURITY.md`](docs/SECURITY.md)
+e [`docs/LOCAL_STACK.md`](docs/LOCAL_STACK.md) (backend local e testes de ponta a ponta).
 
 ## Como executar
 
@@ -60,8 +63,9 @@ A leitura de código de barras e a seleção de fotos usam módulos nativos: no 
 npm run typecheck   # TypeScript
 npm run lint        # ESLint (eslint-config-expo)
 npm test            # testes unitários (Jest)
-npm run test:db     # migrations + testes SQL de RLS/transações num Postgres descartável
+npm run test:db     # migrations + testes SQL (RLS, transações, assinaturas, IA, exclusão, auditoria de segurança)
 npm run check       # todos acima
+npm run e2e         # interface real contra backend local (ver docs/LOCAL_STACK.md)
 ```
 
 `test:db` precisa do PostgreSQL 16 instalado localmente (ou de `DATABASE_URL` apontando para um banco vazio).

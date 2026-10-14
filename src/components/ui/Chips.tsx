@@ -40,14 +40,16 @@ export function Chips<T extends string>({ options, value, onChange, scroll = tru
   });
   if (!scroll) return <>{chips}</>;
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>
+    // flexGrow: 0 evita que o ScrollView horizontal estique verticalmente em telas com pouco conteúdo
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scroll} contentContainerStyle={styles.row}>
       {chips}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  row: { gap: spacing.sm, paddingVertical: 2 },
+  scroll: { flexGrow: 0 },
+  row: { gap: spacing.sm, paddingVertical: 2, alignItems: 'center' },
   chip: {
     paddingHorizontal: spacing.lg,
     minHeight: 40,

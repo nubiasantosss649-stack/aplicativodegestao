@@ -9,6 +9,7 @@ Migrations em `supabase/migrations` (aplicadas em ordem):
 | `…0300_business_functions.sql` | RPCs transacionais e relatórios |
 | `…0400_storage.sql` | Bucket privado `product-photos` e políticas por negócio |
 | `…0500_plans_subscriptions.sql` | Planos/limites, cálculo do plano, gatilhos de limite, eventos RevenueCat |
+| `…0700_account_deletion_security.sql` | Exclusão de conta, log de exclusões, endurecimento de privilégios |
 | `…0600_reports_ai_documents.sql` | Relatórios, recomendações, alertas, cota de IA, orçamentos, documentos, exportação, índices |
 
 ## Tabelas
@@ -58,6 +59,7 @@ Migrations em `supabase/migrations` (aplicadas em ordem):
 | `save_quote` | membro | Orçamento com totais calculados no servidor |
 | `register_document` | membro | Histórico de documentos e numeração de recibos |
 | `export_business_data` | dono/gerente | Exportação completa (LGPD), em todos os planos |
+| `delete_user_data` | **service_role** | Apaga negócios do usuário e todos os dados (usada pela Edge Function `delete-account`) |
 | `apply_revenuecat_event` | **service_role** | Webhook RevenueCat idempotente e resistente a eventos fora de ordem |
 | `upsert_subscription_state` | **service_role** | Estado autoritativo vindo da API REST do RevenueCat |
 | `dashboard_summary` | membro | Indicadores do período (lucro/despesas ocultos para vendedor) |
@@ -78,3 +80,8 @@ no mês, bloqueio de escrita de assinaturas pelo app, compra sandbox recusada em
 evento duplicado, evento fora de ordem, cancelamento vigente, reativação, período de tolerância, outro
 entitlement, usuário desconhecido, expiração (dados continuam acessíveis), sincronização REST e projeto de
 testes aceitando sandbox.
+
+`supabase/tests/40_account_deletion_security.sql` cobre a exclusão completa de conta (todos os dados do negócio,
+assinatura, fotos e vínculos, sem afetar terceiros) e uma **auditoria de segurança** que falha se: alguma tabela
+estiver sem RLS, `anon` tiver acesso a tabelas ou funções, uma função `SECURITY DEFINER` não fixar `search_path`,
+funções internas forem executáveis pelo app, ou tabelas críticas aceitarem escrita direta.

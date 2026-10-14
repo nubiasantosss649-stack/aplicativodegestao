@@ -54,9 +54,13 @@ src/
   __tests__/               # Testes unitários (Jest)
 supabase/
   migrations/              # Esquema, RLS, funções, storage, planos/assinaturas
-  functions/               # Edge Functions (Deno): revenuecat-webhook, sync-subscription, ai-assistant
+  functions/               # Edge Functions (Deno): revenuecat-webhook, sync-subscription, ai-assistant, delete-account
   tests/                   # Testes SQL de integração (RLS, atomicidade, idempotência)
 scripts/test-db.sh         # Sobe um Postgres descartável e roda migrations + testes
+scripts/local-stack/       # Backend local (Postgres + Auth + PostgREST + gateway) para E2E
+e2e/                       # Teste E2E (Playwright), dados demo e capturas para as lojas
+site/                      # Páginas públicas: privacidade, termos, exclusão de conta
+store/                     # Capturas e imagens das lojas
 docs/                      # Esta documentação
 ```
 
@@ -94,5 +98,7 @@ Uma venda fiado **nunca** conta como dinheiro recebido até o pagamento ser regi
   `ai_usage`), relatórios avançados, recomendações de estoque e preço, alertas de prejuízo, exportação PDF e
   Excel (.xlsx gerado no próprio app), recibos e orçamentos, exportação completa dos dados (LGPD) e índices de
   desempenho. Detalhes em `docs/AI.md`.
-- **Fase 4:** builds EAS, ícone/splash finais, capturas, políticas revisadas, exclusão de conta (Edge Function),
-  testes de segurança, publicação.
+- **Fase 4 (concluída):** exclusão de conta (Edge Function `delete-account` + página web), auditoria de segurança
+  automatizada e correções, ícone/splash, configuração das lojas (`app.json`/`eas.json`), textos legais em fonte única
+  com páginas públicas (`site/`), backend local sem Docker e testes E2E na interface real, capturas e imagens de loja.
+  Publicação: `docs/LAUNCH.md`.

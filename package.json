@@ -51,6 +51,7 @@
     "eslint-config-expo": "^57.0.2",
     "jest": "^29.7.0",
     "jest-expo": "~57.0.6",
+    "playwright": "^1.56.1",
     "prettier": "^3.9.10",
     "typescript": "~6.0.3"
   },
@@ -67,7 +68,12 @@
     "build:site": "node scripts/build-site.js",
     "check:release": "node scripts/check-release.js",
     "assets": "python3 scripts/generate-assets.py",
-    "eas-build-post-install": "node scripts/check-release.js --if-production"
+    "eas-build-post-install": "node scripts/check-release.js --if-production",
+    "stack:start": "./scripts/local-stack/start.sh",
+    "stack:stop": "./scripts/local-stack/stop.sh",
+    "seed:demo": "./e2e/seed-demo.sh",
+    "e2e": "node e2e/flow.e2e.js",
+    "screenshots": "node e2e/screenshots.js && python3 scripts/frame-screenshots.py"
   },
   "private": true,
   "jest": {
