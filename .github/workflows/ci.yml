@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test -- --ci
+
+  database:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y postgresql-client
+      - run: ./scripts/test-db.sh
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+
+  edge-functions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: deno check revenuecat-webhook/index.ts sync-subscription/index.ts ai-assistant/index.ts delete-account/index.ts
+        working-directory: supabase/functions
+
+  e2e:
+    # Interface real (build web) contra backend local equivalente ao Supabase
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Binários do backend local (PostgREST + Auth)
+        run: |
+          mkdir -p "$RUNNER_TEMP/bin" && cd "$RUNNER_TEMP/bin"
+          curl -sSL https://github.com/PostgREST/postgrest/releases/download/v12.2.3/postgrest-v12.2.3-linux-static-x64.tar.xz | tar -xJ
+          curl -sSL https://github.com/supabase/auth/releases/download/v2.170.0/auth-v2.170.0-x86.tar.gz | tar -xz
+      - run: BIN_DIR="$RUNNER_TEMP/bin" DENO="$(which deno)" ./scripts/local-stack/start.sh
+      - name: Build web apontando para o backend local
+        run: |
+          source /tmp/gestao-local-stack/.env.local-stack
+          EXPO_PUBLIC_SUPABASE_URL=$EXPO_PUBLIC_SUPABASE_URL EXPO_PUBLIC_SUPABASE_ANON_KEY=$EXPO_PUBLIC_SUPABASE_ANON_KEY \
+            EXPO_PUBLIC_APP_ENV=staging npx expo export --platform web --output-dir dist-e2e
+          nohup node scripts/serve-static.js dist-e2e 8081 > /tmp/serve.log 2>&1 &
+          sleep 2
+      - run: SHOTS=e2e-shots npm run e2e
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-shots
+          path: e2e-shots
