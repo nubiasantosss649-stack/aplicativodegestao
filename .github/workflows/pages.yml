@@ -1,0 +1,51 @@
+name: Site (GitHub Pages)
+
+# Publica privacidade, termos e exclusão de conta (URLs exigidas pelas lojas).
+# Ative uma vez: Settings → Pages → Build and deployment → Source: GitHub Actions.
+on:
+  push:
+    branches: [main]
+    paths:
+      - src/content/legal.json
+      - scripts/build-site.js
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Enquanto houver campos [PREENCHER] nos textos legais, não publica (aviso, sem falhar)
+      - id: build
+        run: |
+          if node scripts/build-site.js --strict; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Páginas não publicadas: preencha os campos [PREENCHER] em src/content/legal.json."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.build.outputs.ready == 'true'
+        uses: actions/configure-pages@v5
+      - if: steps.build.outputs.ready == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - if: steps.build.outputs.ready == 'true'
+        id: deployment
+        uses: actions/deploy-pages@v4

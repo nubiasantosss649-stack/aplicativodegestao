@@ -19,8 +19,15 @@ dados da empresa, pagamentos); o restante já está pronto no repositório.
 ## 1. 👤 Dados obrigatórios
 
 1. Preencha `src/content/legal.json` → `contact` (responsável com CPF/CNPJ, e-mail de suporte, encarregado/DPO).
-2. Revise os textos com assessoria jurídica e rode `npm run build:site`.
-3. Publique a pasta `site/` (GitHub Pages, Netlify ou Vercel) e anote as URLs.
+2. Revise os textos com assessoria jurídica.
+3. Publique as páginas pelo GitHub Pages (automático):
+   - uma vez: no GitHub, **Settings → Pages → Build and deployment → Source: GitHub Actions**;
+   - a cada alteração de `src/content/legal.json` na `main`, o workflow `Site (GitHub Pages)` publica
+     `privacidade.html`, `termos.html` e `excluir-conta.html` (ou rode manualmente em **Actions → Site → Run workflow**);
+   - enquanto houver campos `[PREENCHER]`, o workflow **não publica** e mostra um aviso;
+   - URL: `https://nubiasantosss649-stack.github.io/aplicativodegestao/privacidade.html` (troque pelo seu domínio se
+     configurar um em Settings → Pages → Custom domain).
+   Alternativa: publicar a pasta `site/` (gerada por `npm run build:site`) no Netlify ou Vercel.
 
 ## 2. 👤 Backend de produção (Supabase)
 
@@ -76,7 +83,25 @@ npx eas-cli build --profile production --platform all        # AAB + IPA (falha 
 - [ ] Modo escuro e fonte grande do sistema
 - [ ] Exclusão de conta com assinatura ativa (aviso de cancelamento na loja)
 
-## 7. Envio
+## 7. Conta de teste para os revisores
+
+No seu computador, com as chaves do projeto de **produção** (Supabase → Project Settings → API e Database):
+
+```bash
+SUPABASE_URL=https://<ref>.supabase.co \
+SUPABASE_SERVICE_ROLE_KEY=<service_role> \
+DATABASE_URL='postgresql://postgres.<ref>:<senha>@<host>:5432/postgres' \
+REVIEW_EMAIL=revisao@seudominio.com.br \
+./scripts/create-review-account.sh
+```
+
+Cria a conta já confirmada com dados de demonstração (mercadinho fictício: produtos, clientes, 14 dias de vendas,
+fiados, despesas e um orçamento) e mostra a senha gerada. Por padrão fica no **Plano Grátis**, com vendas livres no mês,
+para o revisor conseguir testar a assinatura em sandbox; `REVIEW_PRO=true` libera o Pro sem compra. `REVIEW_RESET=1`
+recria a conta. Informe e-mail e senha na Play Console (Conteúdo do app → Acesso ao app) e no App Store Connect
+(App Review Information → Sign-in required).
+
+## 8. Envio
 
 ```bash
 npx eas-cli submit --profile production --platform android   # trilha interna, rascunho
@@ -86,12 +111,12 @@ npx eas-cli submit --profile production --platform ios       # TestFlight
 Preencha nas lojas os textos, imagens, URLs, segurança dos dados / rótulos de privacidade, classificação etária,
 informações de revisão e a assinatura — tudo em `docs/STORE_LISTING.md`.
 
-## 8. Checklist de aprovação
+## 9. Checklist de aprovação
 
 **Ambas as lojas**
 - [ ] Política de privacidade acessível no app (Configurações) e por URL pública
 - [ ] Exclusão de conta dentro do app (Configurações → Excluir minha conta)
-- [ ] Conta de teste para o revisor com dados de exemplo
+- [ ] Conta de teste para o revisor com dados de exemplo (`scripts/create-review-account.sh`)
 - [ ] Nenhuma funcionalidade “em breve” ou quebrada visível (✔ o app só mostra recursos implementados)
 - [ ] Documentos identificados como não fiscais (✔)
 - [ ] Permissões com justificativa (câmera e fotos) (✔)
@@ -110,7 +135,7 @@ informações de revisão e a assinatura — tudo em `docs/STORE_LISTING.md`.
 - [ ] Teste fechado com **12 testadores por 14 dias** (exigência para contas pessoais novas) antes da produção
 - [ ] Declaração de assinaturas e política de cancelamento
 
-## 9. Após aprovação
+## 10. Após aprovação
 
 - Lançamento gradual (Play: 10% → 50% → 100%; App Store: lançamento em fases de 7 dias)
 - Acompanhar: erros de Edge Functions (logs do Supabase), `subscription_events`, custo de IA (`docs/AI.md`)

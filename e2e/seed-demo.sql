@@ -1,12 +1,23 @@
--- Dados de DEMONSTRAÇÃO para capturas de tela das lojas (ambiente local).
--- Requer o usuário demo já criado via Auth; :uid é passado pelo psql.
+-- Dados de DEMONSTRAÇÃO (fictícios) de um mercadinho: capturas de tela e conta de revisão das lojas.
+-- Requer o usuário já criado via Auth. Variáveis do psql: uid (id do usuário), pro (true/false).
+-- Afeta somente os dados do próprio usuário informado.
 \set ON_ERROR_STOP 1
 select set_config('request.jwt.claim.sub', :'uid', false);
+-- Máximo de vendas geradas (-v max_sales=N). No plano Grátis use menos de 50 para
+-- respeitar o limite mensal e deixar vendas livres para quem for testar.
+\if :{?max_sales}
+\else
+\set max_sales 1000
+\endif
+select set_config('demo.max_sales', :'max_sales', false);
 select set_config('request.jwt.claims', json_build_object('sub', :'uid', 'role', 'authenticated')::text, false);
 
--- Assinatura Pro (somente neste ambiente local de demonstração)
+-- Assinatura Pro opcional (-v pro=true). Na conta de revisão das lojas o padrão é
+-- false: o revisor precisa conseguir testar a compra no app.
+\if :pro
 select public.upsert_subscription_state(:'uid'::uuid, 'production', 'pro', 'active', 'gestao_pro_mensal', 'PLAY_STORE',
   'NORMAL', now() + interval '25 days', null, true, null, null);
+\endif
 
 create temp table demo_dates (sale_id uuid primary key, at timestamp not null);
 grant all on demo_dates to authenticated;
@@ -24,6 +35,8 @@ declare
   d int; n int; i int; q int; idx int;
   v_method text;
   v_price bigint;
+  v_max int := current_setting('demo.max_sales')::int;
+  v_total int := 0;
 begin
   perform setseed(0.42);
   v_b := public.create_business('Mercadinho da Maria', 'grocery', 'cnpj', '11222333000181', '11988887777');
@@ -59,11 +72,15 @@ begin
   -- 14 dias de vendas
   for d in 0..13 loop
     n := 6 + floor(random() * 8)::int + case when extract(isodow from current_date - d) in (5, 6) then 5 else 0 end;
+    if v_max < 160 then n := greatest(1, round(n * v_max / 160.0)::int); end if;
     for i in 1..n loop
+      exit when v_total >= v_max;
       q := 1 + floor(random() * 3)::int;
       idx := 1 + floor(power(random(), 1.6) * array_length(v_products, 1))::int;
       if idx > array_length(v_products, 1) then idx := array_length(v_products, 1); end if;
-      select price_cents into v_price from public.products where id = v_products[idx];
+      select price_cents into v_price from public.products where id = v_products[idx] and stock_qty >= q;
+      continue when v_price is null; -- produto sem estoque suficiente: pula
+      v_total := v_total + 1;
       v_method := (array['cash', 'pix', 'pix', 'card', 'card', 'credit'])[1 + floor(random() * 6)::int];
       v_c := case when v_method = 'credit' or random() < 0.25 then v_customers[1 + floor(random() * 6)::int] else null end;
       v_s := public.complete_sale(v_b.id, gen_random_uuid(),
@@ -95,8 +112,9 @@ declare
   r record;
 begin
   -- Alguns recebimentos de fiado
-  for r in select distinct customer_id from public.receivables where business_id = v_bid limit 3 loop
-    perform public.receive_payment(v_bid, r.customer_id, 2000, 'pix', gen_random_uuid());
+  for r in select customer_id, sum(amount_cents - paid_cents) as balance from public.receivables
+           where business_id = v_bid and status in ('open', 'partial') group by customer_id limit 3 loop
+    perform public.receive_payment(v_bid, r.customer_id, least(2000, r.balance)::bigint, 'pix', gen_random_uuid());
   end loop;
   -- Despesas e contas a pagar
   insert into public.financial_entries (business_id, kind, category_id, description, amount_cents, competence_date, status, paid_at, method)

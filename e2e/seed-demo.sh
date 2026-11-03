@@ -8,5 +8,5 @@ psql -X -q "postgresql://postgres@127.0.0.1:54330/postgres" -c "delete from auth
 RES=$(curl -s --noproxy '*' -X POST "$U/auth/v1/signup" -H "apikey: $EXPO_PUBLIC_SUPABASE_ANON_KEY" -H 'content-type: application/json' \
   -d '{"email":"demo@gestaofacil.app","password":"demo12345","data":{"full_name":"Maria Souza"}}')
 UID_DEMO=$(echo "$RES" | node -pe 'const r=JSON.parse(require("fs").readFileSync(0));(r.user||r).id')
-psql -X -q "postgresql://postgres@127.0.0.1:54330/postgres" -v uid="$UID_DEMO" -f "$HERE/seed-demo.sql" > /dev/null
+psql -X -q "postgresql://postgres@127.0.0.1:54330/postgres" -v uid="$UID_DEMO" -v pro=true -f "$HERE/seed-demo.sql" > /dev/null
 echo "✅ Conta demo criada: demo@gestaofacil.app / demo12345 ($UID_DEMO)"

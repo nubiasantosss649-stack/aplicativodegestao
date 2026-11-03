@@ -13,6 +13,12 @@ const path = require('path');
 const root = path.resolve(__dirname, '..');
 const legal = JSON.parse(fs.readFileSync(path.join(root, 'src/content/legal.json'), 'utf8'));
 const out = path.join(root, 'site');
+
+// --strict (usado na publicação): não publica páginas legais com campos pendentes
+if (process.argv.includes('--strict') && JSON.stringify(legal).includes('[PREENCHER')) {
+  console.error('❌ src/content/legal.json ainda tem campos [PREENCHER]. Preencha antes de publicar as páginas.');
+  process.exit(1);
+}
 fs.mkdirSync(out, { recursive: true });
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

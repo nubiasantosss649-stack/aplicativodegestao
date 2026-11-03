@@ -113,9 +113,9 @@ Os documentos gerados não possuem valor fiscal.
 
 ## Informações para a revisão (App Review / Play)
 
-- **Conta de teste:** crie no projeto de produção uma conta (ex.: `revisao@<seu-domínio>`) com dados de exemplo
-  e informe e-mail/senha. Se quiser que o revisor veja o Pro sem comprar, conceda acesso promocional no RevenueCat
-  (entitlement `pro`) para essa conta.
+- **Conta de teste:** gere com `scripts/create-review-account.sh` no projeto de produção (ver `docs/LAUNCH.md`, item 7)
+  e informe e-mail/senha. Por padrão a conta fica no Plano Grátis para o revisor testar a compra; se quiser que ele veja
+  o Pro sem comprar, use `REVIEW_PRO=true` ou conceda acesso promocional no RevenueCat (entitlement `pro`).
 - **Notas:** “Aplicativo de gestão para pequenos negócios. Os pagamentos registrados (dinheiro, Pix, cartão, fiado) são
   apenas anotações do comerciante; o app não processa pagamentos. Assinatura Pro via compra no app. Exclusão de conta
   em Mais → Configurações → Excluir minha conta. Documentos gerados são não fiscais.”
